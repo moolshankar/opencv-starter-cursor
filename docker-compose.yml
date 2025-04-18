@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  fastapi:
+    build: .
+    environment:
+      - SERVICE=fastapi
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./dataset:/app/dataset
+      - ./models:/app/models
+    devices:
+      - /dev/video0:/dev/video0  # For webcam access
+    network_mode: host  # Required for webcam access
+
+  streamlit:
+    build: .
+    environment:
+      - SERVICE=streamlit
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./dataset:/app/dataset
+      - ./models:/app/models
+    depends_on:
+      - fastapi
+    network_mode: host  # To communicate with FastAPI service 
